@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { LoggerModule } from '@libs/logger/LoggerModule';
 import { LocalTypeOrmModule } from '../libs/entity/LocalTypeOrmModule';
+import { BoardModule } from './boards/BoardModule';
 
 @Module({
-  imports: [LoggerModule, LocalTypeOrmModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [LoggerModule, LocalTypeOrmModule, BoardModule],
 })
 export class AppModule {}

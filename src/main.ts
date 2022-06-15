@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './AppModule';
 import { setNestApp } from '@libs/web-common/app/setNestApp';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 

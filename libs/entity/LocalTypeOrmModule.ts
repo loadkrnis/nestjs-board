@@ -1,6 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { Article } from '@libs/entity/article/Article';
+import { Article } from '@libs/entity/domain/article/Article';
 
 export const LocalTypeOrmModule = TypeOrmModule.forRoot({
   type: 'mysql',

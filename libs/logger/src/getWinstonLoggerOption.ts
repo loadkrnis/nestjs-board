@@ -3,7 +3,7 @@ import { format, LoggerOptions, transports } from 'winston';
 export function getWinstonLoggerOption(
   nodeEnv = process.env.NODE_ENV,
 ): LoggerOptions {
-  const isLocalEnv = ['local', undefined].includes(nodeEnv);
+  const isLocalEnv = ['test', undefined].includes(nodeEnv);
   return {
     transports: [
       new transports.Console({

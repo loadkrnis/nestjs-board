@@ -1,4 +1,4 @@
-import { Article } from '@libs/entity/article/Article';
+import { Article } from '@libs/entity/domain/article/Article';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 

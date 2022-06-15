@@ -14,7 +14,7 @@ export abstract class BaseTimeEntity {
   id: number;
 
   @Column({
-    type: 'timestamptz',
+    type: 'timestamp',
     transformer: new LocalDateTimeTransformer(),
     nullable: false,
     update: false,
@@ -23,15 +23,15 @@ export abstract class BaseTimeEntity {
   createdAt: LocalDateTime;
 
   @Column({
-    type: 'timestamptz',
+    type: 'timestamp',
     transformer: new LocalDateTimeTransformer(),
-    nullable: false,
+    nullable: true,
     comment: '수정 시각',
   })
   updatedAt: LocalDateTime;
 
   @Column({
-    type: 'timestamptz',
+    type: 'timestamp',
     transformer: new LocalDateTimeTransformer(),
     nullable: true,
     comment: '삭제 시각',

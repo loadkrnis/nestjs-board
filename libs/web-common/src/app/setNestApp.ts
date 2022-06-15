@@ -3,12 +3,12 @@ import {
   BadRequestException,
   ClassSerializerInterceptor,
   INestApplication,
-  Logger,
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
 import { CustomValidationError } from '@libs/web-common/pipe/validation/CustomValidationError';
 import { GlobalExceptionFilter } from '@libs/web-common/filter/GlobalExceptionFilter';
+import { Logger } from '@libs/logger/Logger';
 
 export function setNestApp(app: INestApplication): void {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
