@@ -16,6 +16,26 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@libs/web-common": [
+        "libs/web-common/src"
+      ],
+      "@libs/web-common/*": [
+        "libs/web-common/src/*"
+      ],
+      "@libs/logger": [
+        "libs/logger/src"
+      ],
+      "@libs/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@libs/entity": [
+        "libs/entity/src"
+      ],
+      "@libs/entity/*": [
+        "libs/entity/src/*"
+      ]
+    }
   }
 }
