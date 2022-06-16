@@ -52,4 +52,36 @@ describe('BoardController', () => {
       expect(articles[0].deletedAt).toBeNull();
     });
   });
+
+  describe('[GET] /boards/:id', () => {
+    it('id 가 일치하는 article 을 응답한다.', async () => {
+      // given
+      const article = await articleRepository.save(
+        Article.create('글 제목', '내용입니당.'),
+      );
+
+      // when
+      const response = await request(app.getHttpServer()).get(
+        `/boards/${article.id}`,
+      );
+
+      // then
+      expect(response.body.statusCode).toBe(HttpStatus.OK);
+      expect(response.body.data.title).toBe(article.title);
+      expect(response.body.data.content).toBe(article.content);
+      expect(response.body.data.createdAt).toBeDefined();
+      expect(response.body.data.updatedAt).toBeDefined();
+      expect(response.body.data.deletedAt).toBeDefined();
+    });
+
+    it('id 가 일치하는 article 이 없을 때 NotFound 를 응답한다.', async () => {
+      // given
+      // when
+      const response = await request(app.getHttpServer()).get(`/boards/1`);
+
+      // then
+      expect(response.body.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(response.body.message).toBe('존재하지 않습니다.');
+    });
+  });
 });

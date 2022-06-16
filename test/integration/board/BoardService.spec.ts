@@ -8,6 +8,7 @@ import { BoardModule } from '../../../src/boards/BoardModule';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { LoggerModule } from '@libs/logger/LoggerModule';
 import { closeNestApp } from '../../util/closeNestApp';
+import { NotFoundException } from '@nestjs/common';
 
 describe('BoardService', () => {
   let module: TestingModule;
@@ -46,6 +47,32 @@ describe('BoardService', () => {
       expect(articles).toHaveLength(1);
       expect(articles[0].content).toBe(content);
       expect(articles[0].title).toBe(title);
+    });
+  });
+
+  describe('findOneById', () => {
+    it('id 가 일치하는 article 이 존재하면 조회된다.', async () => {
+      // given
+      const article = await articleRepository.save(
+        Article.create('제목', '내용'),
+      );
+
+      // when
+      const result = await boardService.findOneById(article.id);
+
+      // then
+      expect(result.id).toBe(article.id);
+    });
+
+    it('id 가 일치하는 article 이 없으면 NotFoundException 을 던진다.', async () => {
+      // given
+      // when
+      const t = async () => {
+        await boardService.findOneById(1);
+      };
+
+      // then
+      await expect(t()).rejects.toThrowError(NotFoundException);
     });
   });
 });
