@@ -12,4 +12,12 @@ export class Article extends BaseTimeEntity {
     comment: '본문',
   })
   content: string;
+
+  static create(title: string, content: string) {
+    const article = new Article();
+    article.title = title;
+    article.content = content;
+
+    return article;
+  }
 }

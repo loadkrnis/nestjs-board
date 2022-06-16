@@ -1,17 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
-import { Logger } from '@libs/logger/Logger';
+import { Body, Controller, Post } from '@nestjs/common';
 import { BoardService } from './BoardService';
+import { BoardRequest } from './dto/BoardRequest';
+import { ResponseEntity } from '@libs/web-common/res/ResponseEntity';
 
-@Controller()
+@Controller('boards')
 export class BoardController {
-  constructor(
-    private readonly boardService: BoardService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly boardService: BoardService) {}
 
-  @Get()
-  getHello(): string {
-    this.logger.error('hello');
-    return this.boardService.getHello();
+  @Post()
+  async create(
+    @Body() boardRequest: BoardRequest,
+  ): Promise<ResponseEntity<string>> {
+    await this.boardService.create(boardRequest);
+    return ResponseEntity.OK();
   }
 }

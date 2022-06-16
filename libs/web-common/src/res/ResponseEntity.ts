@@ -13,8 +13,26 @@ export class ResponseEntity<T> {
     this._data = data;
   }
 
-  static OK(): ResponseEntity<string> {
-    return new ResponseEntity<string>(HttpStatus.OK, '', '');
+  @ApiProperty()
+  @Expose()
+  get statusCode(): HttpStatus {
+    return this._statusCode;
+  }
+
+  @ApiProperty()
+  @Expose()
+  get message(): string {
+    return this._message;
+  }
+
+  @ApiProperty()
+  @Expose()
+  get data(): T {
+    return this._data;
+  }
+
+  static OK(httpStatus: HttpStatus = HttpStatus.OK): ResponseEntity<string> {
+    return new ResponseEntity<string>(httpStatus, '', '');
   }
 
   static OK_WITH<T>(data: T): ResponseEntity<T> {
@@ -34,23 +52,5 @@ export class ResponseEntity<T> {
     code: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): ResponseEntity<string> {
     return new ResponseEntity<string>(code, message, '');
-  }
-
-  @ApiProperty()
-  @Expose()
-  get statusCode(): HttpStatus {
-    return this._statusCode;
-  }
-
-  @ApiProperty()
-  @Expose()
-  get message(): string {
-    return this._message;
-  }
-
-  @ApiProperty()
-  @Expose()
-  get data(): T {
-    return this._data;
   }
 }

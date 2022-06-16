@@ -13,7 +13,7 @@ describe('LocalTypeOrmModule', () => {
   });
 
   afterAll(async () => {
-    await entityManager.connection.destroy();
+    await entityManager.connection.close();
   });
 
   it('DB 연결 테스트', async () => {
