@@ -5,6 +5,7 @@ export function getWinstonLoggerOption(
 ): LoggerOptions {
   const isLocalEnv = ['test', undefined].includes(nodeEnv);
   return {
+    silent: nodeEnv === 'test',
     transports: [
       new transports.Console({
         format: isLocalEnv ? getLocalFormat() : getProductionFormat(),

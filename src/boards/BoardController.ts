@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   NotFoundException,
@@ -26,7 +27,7 @@ export class BoardController {
   ): Promise<ResponseEntity<string>> {
     try {
       await this.boardService.create(boardRequest);
-      return ResponseEntity.OK();
+      return ResponseEntity.OK(HttpStatus.CREATED);
     } catch (e) {
       this.logger.error(
         `BoardController create UnknownException: boardRequest=${boardRequest}`,
@@ -53,6 +54,17 @@ export class BoardController {
         `BoardController findOne UnknownException: id=${id}`,
         e,
       );
+      return ResponseEntity.ERROR();
+    }
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id') id: number) {
+    try {
+      await this.boardService.deleteById(id);
+      return ResponseEntity.OK();
+    } catch (e) {
+      this.logger.error(`BoardController delete UnknownException: id=${id}`, e);
       return ResponseEntity.ERROR();
     }
   }

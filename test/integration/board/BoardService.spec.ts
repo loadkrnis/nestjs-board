@@ -75,4 +75,31 @@ describe('BoardService', () => {
       await expect(t()).rejects.toThrowError(NotFoundException);
     });
   });
+
+  describe('deleteById', () => {
+    it('id 가 일치하는 article 을 삭제한다.', async () => {
+      // given
+      const article = await articleRepository.save(
+        Article.create('제목', '내용'),
+      );
+
+      // when
+      await boardService.deleteById(article.id);
+
+      // then
+      const articles = await articleRepository.find();
+      expect(articles).toHaveLength(0);
+    });
+
+    it('id 가 일치하는 article 이 없을 때 에러가 발생하지 않는다.', async () => {
+      // given
+      // when
+      const t = async () => {
+        await boardService.deleteById(1);
+      };
+
+      // then
+      await expect(t()).resolves.toBeUndefined();
+    });
+  });
 });

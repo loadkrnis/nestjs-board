@@ -2,6 +2,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  DeleteDateColumn,
   Generated,
   PrimaryColumn,
 } from 'typeorm';
@@ -30,7 +31,7 @@ export abstract class BaseTimeEntity {
   })
   updatedAt: LocalDateTime;
 
-  @Column({
+  @DeleteDateColumn({
     type: 'timestamp',
     transformer: new LocalDateTimeTransformer(),
     nullable: true,

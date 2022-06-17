@@ -41,7 +41,7 @@ describe('BoardController', () => {
         .send({ title, content });
 
       // then
-      expect(response.body.statusCode).toBe(HttpStatus.OK);
+      expect(response.body.statusCode).toBe(HttpStatus.CREATED);
       const articles = await articleRepository.find();
       expect(articles).toHaveLength(1);
       expect(articles[0].id).toBeDefined();
@@ -82,6 +82,25 @@ describe('BoardController', () => {
       // then
       expect(response.body.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.body.message).toBe('존재하지 않습니다.');
+    });
+  });
+
+  describe('[DELETE] /boards/:id', () => {
+    it('id 가 일치하는 article 을 삭제한다.', async () => {
+      // given
+      const article = await articleRepository.save(
+        Article.create('글 제목', '내용입니당.'),
+      );
+
+      // when
+      const response = await request(app.getHttpServer()).delete(
+        `/boards/${article.id}`,
+      );
+
+      // then
+      expect(response.body.statusCode).toBe(HttpStatus.OK);
+      const articles = await articleRepository.find();
+      expect(articles).toHaveLength(0);
     });
   });
 });

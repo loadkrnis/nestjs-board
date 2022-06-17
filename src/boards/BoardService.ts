@@ -26,4 +26,8 @@ export class BoardService {
       throw e;
     }
   }
+
+  async deleteById(id: number): Promise<void> {
+    await this.articleQueryRepository.softDelete(id);
+  }
 }
