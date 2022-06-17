@@ -39,4 +39,8 @@ export class BoardService {
   ): Promise<[Article[], number]> {
     return this.articleQueryRepository.findOfPage(offset, limit);
   }
+
+  async findBoardCount() {
+    return this.articleQueryRepository.count();
+  }
 }

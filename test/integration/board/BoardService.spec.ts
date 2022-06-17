@@ -145,6 +145,36 @@ describe('BoardService', () => {
     );
   });
 
+  describe('findBoardCount', () => {
+    it('저장되어 있는 article 수를 반환한다.', async () => {
+      // given
+      const count = 10;
+      await createArticles(count);
+
+      // when
+      const result = await boardService.findBoardCount();
+
+      // then
+      expect(result).toBe(count);
+    });
+  });
+
+  it('삭제된 article 이 있으면 count 에 포함되지 않는다.', async () => {
+    // given
+    const count = 10;
+    await createArticles(count);
+    const deletedArticle = await articleRepository.save(
+      Article.create('제목', '내용'),
+    );
+    await articleRepository.softDelete(deletedArticle.id);
+
+    // when
+    const result = await boardService.findBoardCount();
+
+    // then
+    expect(result).toBe(count);
+  });
+
   async function createArticles(count: number) {
     await Promise.all(
       Array.from({ length: count }).map(async (_, index) =>

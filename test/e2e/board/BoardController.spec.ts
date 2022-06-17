@@ -122,6 +122,21 @@ describe('BoardController', () => {
     });
   });
 
+  describe('[GET] /boards/count', () => {
+    it('article 의 개수를 조회한다.', async () => {
+      // given
+      const count = 6;
+      await createArticles(count);
+
+      // when
+      const response = await request(app.getHttpServer()).get(`/boards/count`);
+
+      // then
+      expect(response.body.statusCode).toBe(HttpStatus.OK);
+      expect(response.body.data).toBe(6);
+    });
+  });
+
   async function createArticles(count: number) {
     await Promise.all(
       Array.from({ length: count }).map(async (_, index) =>

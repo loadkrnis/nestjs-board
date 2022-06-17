@@ -40,27 +40,6 @@ export class BoardController {
     }
   }
 
-  @Get('/:id')
-  async findOne(@Param('id') id: number) {
-    try {
-      const article = await this.boardService.findOneById(id);
-      return ResponseEntity.OK_WITH(new BoardDetailResponse(article));
-    } catch (e) {
-      if (e instanceof NotFoundException) {
-        this.logger.info(
-          `BoardController findOne NotFoundException: id=${id}`,
-          e,
-        );
-        return ResponseEntity.ERROR_WITH(e.message, HttpStatus.NOT_FOUND);
-      }
-      this.logger.error(
-        `BoardController findOne UnknownException: id=${id}`,
-        e,
-      );
-      return ResponseEntity.ERROR();
-    }
-  }
-
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     try {
@@ -73,7 +52,9 @@ export class BoardController {
   }
 
   @Get()
-  async findAll(@Query() pageRequest: PageRequest) {
+  async findAll(
+    @Query() pageRequest: PageRequest,
+  ): Promise<ResponseEntity<Pagination<BoardDetailResponse> | string>> {
     try {
       const [articles, total] = await this.boardService.findOfPage(
         pageRequest.offset,
@@ -93,6 +74,38 @@ export class BoardController {
         `BoardController findAll UnknownException: id=${JSON.stringify(
           pageRequest,
         )}`,
+        e,
+      );
+      return ResponseEntity.ERROR();
+    }
+  }
+
+  @Get('/count')
+  async getCount(): Promise<ResponseEntity<number | string>> {
+    try {
+      const result = await this.boardService.findBoardCount();
+      return ResponseEntity.OK_WITH(result);
+    } catch (e) {
+      this.logger.error(`BoardController count UnknownException:`, e);
+      return ResponseEntity.ERROR();
+    }
+  }
+
+  @Get('/:id')
+  async findOne(@Param('id') id: number) {
+    try {
+      const article = await this.boardService.findOneById(id);
+      return ResponseEntity.OK_WITH(new BoardDetailResponse(article));
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        this.logger.info(
+          `BoardController findOne NotFoundException: id=${id}`,
+          e,
+        );
+        return ResponseEntity.ERROR_WITH(e.message, HttpStatus.NOT_FOUND);
+      }
+      this.logger.error(
+        `BoardController findOne UnknownException: id=${id}`,
         e,
       );
       return ResponseEntity.ERROR();
