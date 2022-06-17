@@ -9,6 +9,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { LoggerModule } from '@libs/logger/LoggerModule';
 import { closeNestApp } from '../../util/closeNestApp';
 import { NotFoundException } from '@nestjs/common';
+import { ArticleQueryRepository } from '../../../src/article/ArticleQueryRepository';
 
 describe('BoardService', () => {
   let module: TestingModule;
@@ -17,7 +18,12 @@ describe('BoardService', () => {
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [LocalTypeOrmModule, LoggerModule, BoardModule],
+      imports: [
+        LocalTypeOrmModule,
+        LoggerModule,
+        BoardModule,
+        ArticleQueryRepository,
+      ],
     }).compile();
 
     boardService = module.get(BoardService);
@@ -102,4 +108,48 @@ describe('BoardService', () => {
       await expect(t()).resolves.toBeUndefined();
     });
   });
+
+  describe('findOfPage', () => {
+    it.each([
+      [
+        '총 페이지 수를 넘어서는 페이지번호로 요청하면 빈배열을 반환한다',
+        10, // insert 데이터 개수
+        2, // offset
+        10, // limit
+        8, // 반환되는 article 개수
+        10, // 반환되는 total 값
+      ],
+      ['조건에 해당하는 데이터가 없으면 빈배열을 반환한다', 0, 1, 5, 0, 0],
+      ['첫 번째 페이지에 대한 데이터를 정상적으로 가져온다', 10, 0, 5, 5, 10],
+      ['두 번째 페이지에 대한 데이터를 정상적으로 가져온다', 7, 2, 5, 5, 7],
+    ] as const)(
+      '%s',
+      async (
+        _,
+        savedArticleCount: number,
+        offset: number,
+        limit: number,
+        expectedArticleCount: number,
+        expectedTotal: number,
+      ) => {
+        // given
+        await createArticles(savedArticleCount);
+
+        // when
+        const [articles, total] = await boardService.findOfPage(offset, limit);
+
+        // then
+        expect(articles).toHaveLength(expectedArticleCount);
+        expect(total).toBe(expectedTotal);
+      },
+    );
+  });
+
+  async function createArticles(count: number) {
+    await Promise.all(
+      Array.from({ length: count }).map(async (_, index) =>
+        articleRepository.save(Article.create('title', `${index}`)),
+      ),
+    );
+  }
 });

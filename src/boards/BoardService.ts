@@ -1,16 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleQueryRepository } from '../article/ArticleQueryRepository';
 import { BoardRequest } from './dto/BoardRequest';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from '@libs/entity/domain/article/Article';
-import { EntityNotFoundError } from 'typeorm';
+import { EntityManager, EntityNotFoundError } from 'typeorm';
 
 @Injectable()
 export class BoardService {
-  constructor(
-    @InjectRepository(Article)
-    private articleQueryRepository: ArticleQueryRepository,
-  ) {}
+  private articleQueryRepository: ArticleQueryRepository;
+
+  constructor(em: EntityManager) {
+    this.articleQueryRepository = em.getCustomRepository(
+      ArticleQueryRepository,
+    );
+  }
 
   async create(boardRequest: BoardRequest): Promise<void> {
     await this.articleQueryRepository.save(boardRequest.toEntity());
@@ -29,5 +31,12 @@ export class BoardService {
 
   async deleteById(id: number): Promise<void> {
     await this.articleQueryRepository.softDelete(id);
+  }
+
+  async findOfPage(
+    offset: number,
+    limit: number,
+  ): Promise<[Article[], number]> {
+    return this.articleQueryRepository.findOfPage(offset, limit);
   }
 }

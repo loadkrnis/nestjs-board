@@ -7,12 +7,15 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { BoardService } from './BoardService';
 import { BoardRequest } from './dto/BoardRequest';
 import { ResponseEntity } from '@libs/web-common/res/ResponseEntity';
 import { Logger } from '@libs/logger/Logger';
 import { BoardDetailResponse } from './dto/BoardDetailResponse';
+import { PageRequest } from '@libs/web-common/req/PageRequest';
+import { Pagination } from '@libs/web-common/res/Pagination';
 
 @Controller('boards')
 export class BoardController {
@@ -65,6 +68,33 @@ export class BoardController {
       return ResponseEntity.OK();
     } catch (e) {
       this.logger.error(`BoardController delete UnknownException: id=${id}`, e);
+      return ResponseEntity.ERROR();
+    }
+  }
+
+  @Get()
+  async findAll(@Query() pageRequest: PageRequest) {
+    try {
+      const [articles, total] = await this.boardService.findOfPage(
+        pageRequest.offset,
+        pageRequest.limit,
+      );
+
+      return ResponseEntity.OK_WITH(
+        new Pagination<BoardDetailResponse>(
+          pageRequest.pageNumber,
+          total,
+          pageRequest.pageSize,
+          articles.map((article) => new BoardDetailResponse(article)),
+        ),
+      );
+    } catch (e) {
+      this.logger.error(
+        `BoardController findAll UnknownException: id=${JSON.stringify(
+          pageRequest,
+        )}`,
+        e,
+      );
       return ResponseEntity.ERROR();
     }
   }

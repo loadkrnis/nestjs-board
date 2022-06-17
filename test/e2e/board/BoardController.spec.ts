@@ -103,4 +103,30 @@ describe('BoardController', () => {
       expect(articles).toHaveLength(0);
     });
   });
+
+  describe('[GET] /boards', () => {
+    it('페이지로 article 을 조회한다.', async () => {
+      // given
+      await createArticles(10);
+      const pageNumber = 2;
+      const pageSize = 7;
+
+      // when
+      const response = await request(app.getHttpServer()).get(
+        `/boards?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      );
+
+      // then
+      expect(response.body.statusCode).toBe(HttpStatus.OK);
+      expect(response.body.data.items).toHaveLength(3);
+    });
+  });
+
+  async function createArticles(count: number) {
+    await Promise.all(
+      Array.from({ length: count }).map(async (_, index) =>
+        articleRepository.save(Article.create('title', `${index}`)),
+      ),
+    );
+  }
 });
